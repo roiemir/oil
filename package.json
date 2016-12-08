@@ -1,0 +1,19 @@
+{
+  "name": "oil",
+  "version": "1.0.0",
+  "description": "OIL Parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roiemir/oil.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roiemir/oil/issues"
+  },
+  "homepage": "https://github.com/roiemir/oil#readme"
+}
