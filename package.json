@@ -4,7 +4,7 @@
   "description": "OIL Parser",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/roiemir/oil/issues"
   },
-  "homepage": "https://github.com/roiemir/oil#readme"
+  "homepage": "https://github.com/roiemir/oil#readme",
+  "devDependencies": {
+    "mocha": "^3.4.2"
+  }
 }
