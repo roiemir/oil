@@ -24,9 +24,8 @@ describe('Expressions', function () {
             assert.equal(expression.key, "x");
             assert.equal(expression.sequence["!exp"], "i");
             assert.equal(expression.sequence.identifier, "states");
-            assert.equal(expression.condition["!exp"], "b");
-            assert.equal(expression.selection["!exp"], "i");
 
         });
+
     });
 });
