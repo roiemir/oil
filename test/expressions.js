@@ -28,4 +28,22 @@ describe('Expressions', function () {
         });
 
     });
+
+    describe('Selector', function () {
+        it('selector operator', function () {
+            var result = oil.parse('box {field: x -> x.value}');
+            assert.equal(result.length, 1);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+        });
+    });
+
+    describe('Objects', function () {
+        it('empty object', function () {
+            var result = oil.parse('box {}');
+            assert.equal(result.length, 1);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+        });
+    });
 });
