@@ -46,4 +46,25 @@ describe('Expressions', function () {
             assert.equal(box["!type"], "box");
         });
     });
+
+    describe('Values', function () {
+        it('Reference values', function () {
+            var result = oil.parse('8 "text" box{} ');
+            result = oil.parse('eight 8 text "text" box {}');
+            assert.equal(result.length, 3);
+            var number = result[0];
+            var text = result[1];
+            var obj = result[2];
+            assert.equal(number["!ref"], "eight");
+            assert.equal(number["!value"], 8);
+            assert.equal(text["!ref"], "text");
+            assert.equal(text["!value"], "text");
+            assert.equal(obj["!type"], "box");
+        });
+
+        it('Object value', function () {
+            var result = oil.parse('{number: 8, text: "eight", obj: {a: 1, b: "2" }}');
+            assert.equal(result.length, 1);
+        });
+    });
 });
