@@ -36,6 +36,26 @@ describe('Expressions', function () {
             var box = result[0];
             assert.equal(box["!type"], "box");
         });
+
+        it('Sequence selector', function () {
+            var result = oil.parse('object { field: collection[x ? x == something -> x] }');
+            assert.equal(result.length, 1);
+            var obj = result[0];
+            assert.equal(obj["!type"], "object");
+            assert.equal(obj.field["!exp"], "s");
+            assert.equal(obj.field.selection["!exp"], "i");
+            assert.equal(obj.field.selection.identifier, "x");
+        });
+        it('Sequence selector with selector in condition', function () {
+            var result = oil.parse('object { field: collection[x ? x == (something -> x)] }');
+            assert.equal(result.length, 1);
+            var obj = result[0];
+            assert.equal(obj["!type"], "object");
+            assert.equal(obj.field["!exp"], "s");
+            assert.equal(obj.field.selection, null);
+            assert.equal(obj.field.condition.left.identifier, "x");
+            assert.equal(obj.field.condition.right["!exp"], "->");
+        });
     });
 
     describe('Objects', function () {
