@@ -65,6 +65,36 @@ describe('Expressions', function () {
             var box = result[0];
             assert.equal(box["!type"], "box");
         });
+
+        it('init empty object', function () {
+            var result = oil.parse('box()');
+            assert.equal(result.length, 1);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+        });
+
+        it('object width fields and items', function () {
+            var result = oil.parse('box { a: 1, b: "text", c: [2, 1, 3], [ child() ] }');
+            assert.equal(result.length, 1);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+            assert.equal(box.a, 1);
+            assert.equal(box.b, "text");
+            assert.equal(box.c.length, 3);
+            assert.equal(box["!items"].length, 1);
+            assert.equal(box["!items"][0]["!type"], "child");
+        });
+
+        it('nested object', function () {
+            var result = oil.parse('ref1 box(1, 2) ref2 child {}');
+            assert.equal(result.length, 1);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+            assert.equal(box["!init"][0], 1);
+            assert.equal(box["!init"][1], 2);
+            assert.equal(box["!items"].length, 1);
+            assert.equal(box["!items"][0]["!type"], "child");
+        });
     });
 
     describe('Values', function () {

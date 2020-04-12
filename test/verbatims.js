@@ -23,8 +23,8 @@ describe('Verbatims', function () {
     it('Block delimiter with type', function () {
         var result = oil.parse('@ contentType  [ some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   ]  @');
         assert.equal(result.length, 1);
-        assert.equal(result[0].type, "contentType");
-        assert.equal(result[0].content, " some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   ");
+        assert.equal(result[0]["!type"], "contentType");
+        assert.equal(result[0]["!content"], " some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   ");
     });
 
     it('Line end delimiter', function () {
@@ -36,7 +36,7 @@ describe('Verbatims', function () {
     it('Content type delimiter', function () {
         var result = oil.parse('@ contentType \n some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   contentType  @');
         assert.equal(result.length, 1);
-        assert.equal(result[0].type, "contentType");
-        assert.equal(result[0].content, " some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   ");
+        assert.equal(result[0]["!type"], "contentType");
+        assert.equal(result[0]["!content"], " some long text \n seperated by lines \n with oil like objects (test) { a: b } index \n   ");
     });
 });
