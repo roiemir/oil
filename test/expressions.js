@@ -86,14 +86,24 @@ describe('Expressions', function () {
         });
 
         it('nested object', function () {
-            var result = oil.parse('ref1 box(1, 2) ref2 child {}');
-            assert.equal(result.length, 1);
-            var box = result[0];
+            var box = oil.parseOne('ref1 box(1, 2) ref2 child {}');
             assert.equal(box["!type"], "box");
             assert.equal(box["!init"][0], 1);
             assert.equal(box["!init"][1], 2);
             assert.equal(box["!items"].length, 1);
             assert.equal(box["!items"][0]["!type"], "child");
+        });
+
+        it('nested object not parsed on root', function () {
+            var result = oil.parse('ref1 box(1, 2) ref2 box {}');
+            assert.equal(result.length, 2);
+            var box = result[0];
+            assert.equal(box["!type"], "box");
+            assert.equal(box["!init"][0], 1);
+            assert.equal(box["!init"][1], 2);
+            assert.equal(box["!items"], null);
+            box = result[1];
+            assert.equal(box["!type"], "box");
         });
     });
 
@@ -115,6 +125,35 @@ describe('Expressions', function () {
         it('Object value', function () {
             var result = oil.parse('{number: 8, text: "eight", obj: {a: 1, b: "2" }}');
             assert.equal(result.length, 1);
+        });
+
+        it('Compound number single integer', function () {
+            var result = oil.parse('item { value: 1k }');
+            assert.equal(result.length, 1);
+            var item = result[0];
+            var compound = item.value["!compound"];
+            assert.ok(compound);
+            assert.equal(compound.k, 1);
+        });
+
+        it('Compound number single decimal', function () {
+            var result = oil.parse('item { value: 1.5k }');
+            assert.equal(result.length, 1);
+            var item = result[0];
+            var compound = item.value["!compound"];
+            assert.ok(compound);
+            assert.equal(compound.k, 1.5);
+        });
+
+        it('Compound number multiple denominations', function () {
+            var result = oil.parse('item { value: 1.5 k 20gr 16n }');
+            assert.equal(result.length, 1);
+            var item = result[0];
+            var compound = item.value["!compound"];
+            assert.ok(compound);
+            assert.equal(compound.k, 1.5);
+            assert.equal(compound.gr, 20);
+            assert.equal(compound.n, 16);
         });
     });
 });
