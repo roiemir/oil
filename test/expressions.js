@@ -58,6 +58,22 @@ describe('Expressions', function () {
         });
     });
 
+    describe('Conditional', function () {
+        it('Basic conditional', function () {
+            var result = oil.parse('cond ? pos : neg');
+            assert.equal(result.length, 1);
+            var cond = result[0];
+            assert.equal(cond["!exp"], "?:");
+        });
+
+        it('Partial conditional', function () {
+            var result = oil.parse('cond ? pos');
+            assert.equal(result.length, 1);
+            var cond = result[0];
+            assert.equal(cond["!exp"], "?:");
+        });
+    });
+
     describe('Objects', function () {
         it('empty object', function () {
             var result = oil.parse('box {}');
