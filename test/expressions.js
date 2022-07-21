@@ -24,7 +24,26 @@ describe('Expressions', function () {
             assert.equal(expression.key, "x");
             assert.equal(expression.sequence["!exp"], "i");
             assert.equal(expression.sequence.identifier, "states");
+            assert.equal(expression.order["!exp"], "u");
+            assert.equal(expression.order.operator, "-");
+            assert.equal(expression.order.argument["!exp"], "f");
+            assert.equal(expression.order.argument.field, "time");
 
+
+        });
+
+        it('groups sequence', function () {
+            var result = oil.parse('states[x ~= -x.time]');
+            assert.equal(result.length, 1);
+            var expression = result[0];
+            assert.equal(expression["!exp"], "s");
+            assert.equal(expression.key, "x");
+            assert.equal(expression.sequence["!exp"], "i");
+            assert.equal(expression.sequence.identifier, "states");
+            assert.equal(expression.group["!exp"], "u");
+            assert.equal(expression.group.operator, "-");
+            assert.equal(expression.group.argument["!exp"], "f");
+            assert.equal(expression.group.argument.field, "time");
         });
 
     });
