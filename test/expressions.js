@@ -16,6 +16,20 @@ describe('Expressions', function () {
 
         });
 
+        it('sequence selector with index', function () {
+            var result = oil.parse('list[x, i ? x.id == "id1" || i < 2 -> x]');
+            assert.equal(result.length, 1);
+            var expression = result[0];
+            assert.equal(expression["!exp"], "s");
+            assert.equal(expression.key, "x");
+            assert.equal(expression.index, "i");
+            assert.equal(expression.sequence["!exp"], "i");
+            assert.equal(expression.sequence.identifier, "list");
+            assert.equal(expression.condition["!exp"], "||");
+            assert.equal(expression.selection["!exp"], "i");
+
+        });
+
         it('ordered sequence', function () {
             var result = oil.parse('states[x ~ -x.time]');
             assert.equal(result.length, 1);
