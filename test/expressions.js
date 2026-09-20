@@ -156,4 +156,47 @@ describe('Expressions', function () {
             assert.equal(compound.n, 16);
         });
     });
+
+    describe('Positions', function () {
+        it('adds !pos with index, line and character when the positions option is set', function () {
+            var source = 
+            "states[x ? x.id == \"id1\" -> x]\n" +
+            "box {\n" +
+            "    a: 1,\n" +
+            "    b: \"text\",\n" + 
+            "    c: [2, 1, 3],\n" +
+            "    [\n" +
+            "        child()\n" +
+            "    ]\n" +
+            "}\n" +
+            "item {\n" + 
+            "    value: 1k\n" +
+            "}";
+
+            var result = oil.parse(source, {positions: true});
+            assert.equal(result.length, 3);
+
+            var sequence = result[0];
+            assert.deepEqual(sequence["!pos"], {index: 0, line: 1, character: 1});
+
+            var box = result[1];
+            var boxIndex = source.indexOf('box');
+            assert.deepEqual(box["!pos"], {index: boxIndex, line: 2, character: 1});
+
+            var child = box["!items"][0];
+            var childIndex = source.indexOf('child');
+            assert.deepEqual(child["!pos"], {index: childIndex, line: 7, character: 9});
+
+            var item = result[2];
+            var itemIndex = source.indexOf('item');
+            assert.deepEqual(item["!pos"], {index: itemIndex, line: 10, character: 1});
+
+            var compoundIndex = source.indexOf('1k');
+            assert.deepEqual(item.value["!pos"], {
+                index: compoundIndex,
+                line: 11,
+                character: 12
+            });
+        });
+    });
 });
