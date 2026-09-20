@@ -248,4 +248,43 @@ describe('Expressions', function () {
             });
         });
     });
+
+    describe('Error recovery', function () {
+        it('does not recover from errors when the detailed option is not set', function () {
+            var result = oil.parse('a + 1; : ; c + 2');
+            assert.deepEqual(result, []);
+        });
+
+        it('recovers from an invalid top level expression and continues with the next ones', function () {
+            var result = oil.parse('a + 1; : ; c + 2', {detailed: true});
+            assert.equal(result.expressions.length, 2);
+            assert.equal(result.expressions[0].left.identifier, "a");
+            assert.equal(result.expressions[1].left.identifier, "c");
+            assert.equal(result.errors.length, 1);
+            assert.equal(result.errors[0].message, "not a primary expression");
+        });
+
+        it('recovers from a missing comma between object fields', function () {
+            var result = oil.parse('box { a: [1] b: 2 }', {detailed: true});
+            assert.equal(result.expressions.length, 1);
+            var box = result.expressions[0];
+            assert.equal(box["!type"], "box");
+            assert.equal(box.a.length, 1);
+            assert.equal(box.a[0], 1);
+            assert.equal(box.b, 2);
+            assert.equal(result.errors.length, 1);
+            assert.equal(result.errors[0].message, "',' expected between fields");
+        });
+
+        it('recovers from a missing closing brace of an object', function () {
+            var result = oil.parse('box { a: 1, b: 2', {detailed: true});
+            assert.equal(result.expressions.length, 1);
+            var box = result.expressions[0];
+            assert.equal(box["!type"], "box");
+            assert.equal(box.a, 1);
+            assert.equal(box.b, 2);
+            assert.equal(result.errors.length, 1);
+            assert.equal(result.errors[0].message, "'}' expected to close object");
+        });
+    });
 });
