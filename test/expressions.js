@@ -207,22 +207,22 @@ describe('Expressions', function () {
     });
 
     describe('Positions', function () {
-        it('adds !pos with index, line and character when the positions option is set', function () {
-            var source = 
+        it('adds !pos with index, line and character when the detailed option is set', function () {
+            var source =
             "states[x ? x.id == \"id1\" -> x]\n" +
             "box {\n" +
             "    a: 1,\n" +
-            "    b: \"text\",\n" + 
+            "    b: \"text\",\n" +
             "    c: [2, 1, 3],\n" +
             "    [\n" +
             "        child()\n" +
             "    ]\n" +
             "}\n" +
-            "item {\n" + 
+            "item {\n" +
             "    value: 1k\n" +
             "}";
 
-            var result = oil.parse(source, {positions: true});
+            var result = oil.parse(source, {detailed: true}).expressions;
             assert.equal(result.length, 3);
 
             var sequence = result[0];
