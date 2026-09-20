@@ -16,6 +16,20 @@ describe('Expressions', function () {
 
         });
 
+        it('sequence selector with index', function () {
+            var result = oil.parse('list[x, i ? x.id == "id1" || i < 2 -> x]');
+            assert.equal(result.length, 1);
+            var expression = result[0];
+            assert.equal(expression["!exp"], "s");
+            assert.equal(expression.key, "x");
+            assert.equal(expression.index, "i");
+            assert.equal(expression.sequence["!exp"], "i");
+            assert.equal(expression.sequence.identifier, "list");
+            assert.equal(expression.condition["!exp"], "||");
+            assert.equal(expression.selection["!exp"], "i");
+
+        });
+
         it('ordered sequence', function () {
             var result = oil.parse('states[x ~ -x.time]');
             assert.equal(result.length, 1);
@@ -24,7 +38,26 @@ describe('Expressions', function () {
             assert.equal(expression.key, "x");
             assert.equal(expression.sequence["!exp"], "i");
             assert.equal(expression.sequence.identifier, "states");
+            assert.equal(expression.order["!exp"], "u");
+            assert.equal(expression.order.operator, "-");
+            assert.equal(expression.order.argument["!exp"], "f");
+            assert.equal(expression.order.argument.field, "time");
 
+
+        });
+
+        it('groups sequence', function () {
+            var result = oil.parse('states[x ~= -x.time]');
+            assert.equal(result.length, 1);
+            var expression = result[0];
+            assert.equal(expression["!exp"], "s");
+            assert.equal(expression.key, "x");
+            assert.equal(expression.sequence["!exp"], "i");
+            assert.equal(expression.sequence.identifier, "states");
+            assert.equal(expression.group["!exp"], "u");
+            assert.equal(expression.group.operator, "-");
+            assert.equal(expression.group.argument["!exp"], "f");
+            assert.equal(expression.group.argument.field, "time");
         });
 
     });
@@ -55,6 +88,22 @@ describe('Expressions', function () {
             assert.equal(obj.field.selection, null);
             assert.equal(obj.field.condition.left.identifier, "x");
             assert.equal(obj.field.condition.right["!exp"], "->");
+        });
+    });
+
+    describe('Conditional', function () {
+        it('Basic conditional', function () {
+            var result = oil.parse('cond ? pos : neg');
+            assert.equal(result.length, 1);
+            var cond = result[0];
+            assert.equal(cond["!exp"], "?:");
+        });
+
+        it('Partial conditional', function () {
+            var result = oil.parse('cond ? pos');
+            assert.equal(result.length, 1);
+            var cond = result[0];
+            assert.equal(cond["!exp"], "?:");
         });
     });
 
