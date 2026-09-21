@@ -276,6 +276,16 @@ describe('Expressions', function () {
             assert.deepEqual(first, second);
         });
 
+        it('prefixes !id with the name option', function () {
+            var result = oil.parse("box { a: 1 }\nitem { b: 2 }", {detailed: true, name: "file1"}).expressions;
+            assert.ok(/^file1:\d+$/.test(result[0]["!id"]));
+            assert.ok(/^file1:\d+$/.test(result[1]["!id"]));
+            assert.notEqual(result[0]["!id"], result[1]["!id"]);
+
+            var one = oil.parseOne("box { a: 1 }", {detailed: true, name: "n"}).expression;
+            assert.ok(/^n:\d+$/.test(one["!id"]));
+        });
+
         it('does not add !id when the detailed option is not set', function () {
             var result = oil.parse("box { a: 1 }");
             assert.equal(result[0]["!id"], undefined);
