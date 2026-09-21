@@ -249,6 +249,39 @@ describe('Expressions', function () {
         });
     });
 
+    describe('Ids', function () {
+        it('adds a unique incremental !id to objects when the detailed option is set', function () {
+            var source = "box { a: 1, [ child() ] }\nitem { b: 2 }";
+            var result = oil.parse(source, {detailed: true}).expressions;
+            var box = result[0];
+            var child = box["!items"][0];
+            var item = result[1];
+
+            var ids = [box["!id"], child["!id"], item["!id"]];
+            ids.forEach(function (id) {
+                assert.equal(typeof id, "number");
+            });
+            assert.equal(new Set(ids).size, ids.length);
+            assert.ok(child["!id"] < item["!id"]);
+
+        });
+
+        it('assigns the same ids every time the same text is parsed', function () {
+            var source = "box { a: 1, [ child() ] }\nitem { b: 2 }";
+            var collect = function (result) {
+                return [result[0]["!id"], result[0]["!items"][0]["!id"], result[1]["!id"]];
+            };
+            var first = collect(oil.parse(source, {detailed: true}).expressions);
+            var second = collect(oil.parse(source, {detailed: true}).expressions);
+            assert.deepEqual(first, second);
+        });
+
+        it('does not add !id when the detailed option is not set', function () {
+            var result = oil.parse("box { a: 1 }");
+            assert.equal(result[0]["!id"], undefined);
+        });
+    });
+
     describe('Error recovery', function () {
         it('does not recover from errors when the detailed option is not set', function () {
             var result = oil.parse('a + 1; : ; c + 2');
